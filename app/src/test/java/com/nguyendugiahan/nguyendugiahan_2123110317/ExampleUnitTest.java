@@ -1,4 +1,4 @@
-package com.nguyendugiahan.nguyendugiahan;
+package com.nguyendugiahan.nguyendugiahan_2123110317;
 
 import org.junit.Test;
 

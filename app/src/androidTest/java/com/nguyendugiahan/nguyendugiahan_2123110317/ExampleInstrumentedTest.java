@@ -1,4 +1,4 @@
-package com.nguyendugiahan.nguyendugiahan;
+package com.nguyendugiahan.nguyendugiahan_2123110317;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.nguyendugiahan.nguyendugiahan", appContext.getPackageName());
+        assertEquals("com.nguyendugiahan.nguyendugiahan_2123110317", appContext.getPackageName());
     }
 }
