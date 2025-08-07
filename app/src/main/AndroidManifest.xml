@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NguyenDuGiaHan_2123110317">
         <activity
+            android:name=".HomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false" />
+        <activity
             android:name=".LoginActivity2"
             android:exported="true">
             <intent-filter>

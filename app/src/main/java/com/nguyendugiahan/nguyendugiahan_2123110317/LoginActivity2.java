@@ -37,20 +37,15 @@ public class LoginActivity2 extends AppCompatActivity {
                 EditText objPass = findViewById(R.id.txtPass);
                 String txtPass = objPass.getText().toString();
 
-                CharSequence text = txtName + " " + txtPass;
-                int duration = Toast.LENGTH_SHORT;
-                if(txtName.equals("Han") && txtPass.equals("777"))
-                {
+                if (txtName.equals("Han") && txtPass.equals("777")) {
                     Intent it = new Intent(getApplicationContext(), MainActivity.class);
+                    it.putExtra("name", txtName);
                     startActivity(it);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Login fail", Toast.LENGTH_SHORT).show();
                 }
-                else{
-                    Toast toast= Toast.makeText(getApplicationContext(), "Login fail", duration);
-                    toast.show();
-                }
-                Intent it = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(it);
             }
         });
+
     }
 }
