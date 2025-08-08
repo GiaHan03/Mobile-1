@@ -2,14 +2,20 @@ package com.nguyendugiahan.nguyendugiahan_2123110317;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class HomeActivity extends AppCompatActivity {
+
+    TextView txtWelcome;
+    Button btnLogout, btnExit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +28,12 @@ public class HomeActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Ánh xạ các view từ layout
+        txtWelcome = findViewById(R.id.txtWelcome);
+        btnLogout = findViewById(R.id.btnLogout);
+        btnExit = findViewById(R.id.btnExit);
+
+        // Lấy dữ liệu từ Intent
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
 
@@ -29,7 +41,7 @@ public class HomeActivity extends AppCompatActivity {
             txtWelcome.setText("Xin chào, " + name + "!");
         }
 
-        btnLogin.setOnClickListener(v -> {
+        btnLogout.setOnClickListener(v -> {
             Intent i = new Intent(HomeActivity.this, LoginActivity2.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Clear back stack
             startActivity(i);

@@ -7,6 +7,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -26,26 +28,28 @@ public class LoginActivity2 extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        Button btnSignup = findViewById(R.id.btnSignup);
-        btnSignup.setOnClickListener(new View.OnClickListener() {
+//Đăng nhập
+        Button btnNext = findViewById(R.id.btnLogin);
+        btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 EditText objName = findViewById(R.id.txtName);
                 String txtName = objName.getText().toString();
 
                 EditText objPass = findViewById(R.id.txtPass);
                 String txtPass = objPass.getText().toString();
 
-                if (txtName.equals("Han") && txtPass.equals("777")) {
+                if (txtName.equals("DomDom") && txtPass.equals("173"))
+                {
                     Intent it = new Intent(getApplicationContext(), MainActivity.class);
                     it.putExtra("name", txtName);
+                    it.putExtra("pass", txtPass);
                     startActivity(it);
                 } else {
-                    Toast.makeText(getApplicationContext(), "Login fail", Toast.LENGTH_SHORT).show();
+                    Toast toast = Toast.makeText(getApplicationContext(), "Login fail", Toast.LENGTH_SHORT);
+                    toast.show();
                 }
             }
         });
-
     }
 }
