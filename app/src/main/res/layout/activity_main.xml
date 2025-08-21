@@ -25,6 +25,7 @@
         android:layout_margin="10dp"
         android:hint="Enter your job" />
 
+
     <!--button for adding data-->
     <Button
         android:id="@+id/idBtnPost"
@@ -52,5 +53,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:visibility="gone" />
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

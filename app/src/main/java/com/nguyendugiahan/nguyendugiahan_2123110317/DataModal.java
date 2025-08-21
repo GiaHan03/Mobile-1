@@ -1,5 +1,4 @@
 package com.nguyendugiahan.nguyendugiahan_2123110317;
-
 public class DataModal {
 
     // string variables for our name and job
