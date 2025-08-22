@@ -1,14 +1,19 @@
 package com.nguyendugiahan.nguyendugiahan_2123110317;
 
-import android.annotation.SuppressLint;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,9 +23,14 @@ public class ProductDetailActivity extends AppCompatActivity {
 
     ImageView imgProduct;
     TextView txtName, txtPrice, txtDescription;
-    Button btnAddToCart;
+    Button btnAddToCart, btnViewCart, btnBackHome;
 
-    @SuppressLint("MissingInflatedId")
+    String name, price, description;
+    int image;
+
+    // API lưu đơn hàng
+    String API_URL = "https://6895acb2039a1a2b288fe535.mockapi.io/cart";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,12 +41,14 @@ public class ProductDetailActivity extends AppCompatActivity {
         txtPrice = findViewById(R.id.txtProductPriceDetail);
         txtDescription = findViewById(R.id.txtProductDescription);
         btnAddToCart = findViewById(R.id.btnAddToCart);
+        btnViewCart = findViewById(R.id.btnViewCart);
+        btnBackHome = findViewById(R.id.btnBackHome);
 
         // Nhận dữ liệu từ Intent
-        String name = getIntent().getStringExtra("name");
-        String price = getIntent().getStringExtra("price");
-        int image = getIntent().getIntExtra("image", 0);
-        String description = getIntent().getStringExtra("description");
+        name = getIntent().getStringExtra("name");
+        price = getIntent().getStringExtra("price");
+        description = getIntent().getStringExtra("description");
+        image = getIntent().getIntExtra("image", 0);
 
         // Gán dữ liệu
         imgProduct.setImageResource(image);
@@ -44,43 +56,79 @@ public class ProductDetailActivity extends AppCompatActivity {
         txtPrice.setText(price);
         txtDescription.setText(description);
 
-        btnAddToCart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Lấy dữ liệu sản phẩm
-                String name = txtName.getText().toString();
-                String price = txtPrice.getText().toString();
-                String description = txtDescription.getText().toString();
-                int imageRes = getIntent().getIntExtra("image", 0);
-
-                // Lưu vào giỏ hàng
-                SharedPreferences prefs = getSharedPreferences("cart", MODE_PRIVATE);
-                String oldCart = prefs.getString("cart_items", "[]");
-
-                try {
-                    JSONArray cartArray = new JSONArray(oldCart);
-
-                    JSONObject product = new JSONObject();
-                    product.put("name", name);
-                    product.put("price", price);
-                    product.put("description", description);
-                    product.put("image", imageRes);
-
-                    cartArray.put(product);
-
-                    prefs.edit().putString("cart_items", cartArray.toString()).apply();
-
-                    Toast.makeText(ProductDetailActivity.this, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(ProductDetailActivity.this, "Lỗi khi thêm vào giỏ", Toast.LENGTH_SHORT).show();
-                }
-            }
+        // Thêm vào giỏ
+        btnAddToCart.setOnClickListener(v -> {
+            addToCartLocal();   // lưu local
+            addToCartAPI();     // lưu server
         });
 
+        // Chuyển sang giỏ hàng
+        btnViewCart.setOnClickListener(v -> {
+            Intent intent = new Intent(ProductDetailActivity.this, CartActivity.class);
+            startActivity(intent);
+        });
+
+        // Quay lại Home
+        btnBackHome.setOnClickListener(v -> {
+            Intent intent = new Intent(ProductDetailActivity.this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        });
+    }
+
+    // Lưu giỏ hàng trong SharedPreferences
+    private void addToCartLocal() {
+        SharedPreferences prefs = getSharedPreferences("cart", MODE_PRIVATE);
+        String oldCart = prefs.getString("cart_items", "[]");
+
+        try {
+            JSONArray cartArray = new JSONArray(oldCart);
+
+            JSONObject product = new JSONObject();
+            product.put("name", name);
+            product.put("price", price);
+            product.put("description", description);
+            product.put("image", image);
+
+            cartArray.put(product);
+
+            prefs.edit().putString("cart_items", cartArray.toString()).apply();
+
+            Toast.makeText(this, name + " đã được thêm vào giỏ hàng (Local)", Toast.LENGTH_SHORT).show();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Lỗi khi thêm vào giỏ (Local)", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Gửi giỏ hàng lên API (server)
+    private void addToCartAPI() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        JSONObject product = new JSONObject();
+        try {
+            product.put("name", name);
+            product.put("price", price);
+            product.put("description", description);
+            product.put("image", image);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                API_URL,
+                product,
+                response -> {
+                    Toast.makeText(ProductDetailActivity.this, "Đã lưu sản phẩm lên server!", Toast.LENGTH_SHORT).show();
+                },
+                error -> {
+                    Toast.makeText(ProductDetailActivity.this, "Lỗi khi lưu lên server", Toast.LENGTH_SHORT).show();
+                }
+        );
+
+        queue.add(request);
     }
 }
-
-
-

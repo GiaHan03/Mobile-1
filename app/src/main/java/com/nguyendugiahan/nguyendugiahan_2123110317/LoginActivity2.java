@@ -1,10 +1,9 @@
 package com.nguyendugiahan.nguyendugiahan_2123110317;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -13,8 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -25,12 +22,10 @@ import org.json.JSONObject;
 public class LoginActivity2 extends AppCompatActivity {
 
     EditText edtEmail, edtPassword;
-    Button btnLogin;
+    Button btnLogin, btnRegister;
 
-    // URL API của bạn (MockAPI hoặc server thật)
     String url = "https://6895acb2039a1a2b288fe535.mockapi.io/user";
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,12 +34,15 @@ public class LoginActivity2 extends AppCompatActivity {
         edtEmail = findViewById(R.id.txtEmail);
         edtPassword = findViewById(R.id.txtPass);
         btnLogin = findViewById(R.id.btnLogin);
+        btnRegister = findViewById(R.id.btnRegister);
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkLogin();
-            }
+        // 🔹 Xử lý nút Login
+        btnLogin.setOnClickListener(v -> checkLogin());
+
+        // 🔹 Chuyển sang màn hình Đăng ký
+        btnRegister.setOnClickListener(v -> {
+            Intent i = new Intent(LoginActivity2.this, RegisterActivity.class);
+            startActivity(i);
         });
     }
 
@@ -60,47 +58,47 @@ public class LoginActivity2 extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        boolean success = false;
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
-                                JSONObject user = response.getJSONObject(i);
+                response -> {
+                    boolean success = false;
+                    for (int i = 0; i < response.length(); i++) {
+                        try {
+                            JSONObject user = response.getJSONObject(i);
+                            Log.d("API_USER", user.toString()); // Debug API
 
-                                // ⚠️ Kiểm tra key trả về từ API (có thể là "name", "username", "email")
-                                String email = user.getString("name");   // nếu API là "email" thì sửa lại
-                                String pass = user.getString("password");
+                            // Kiểm tra key JSON
+                            String email = user.optString("email");
+                            String pass = user.optString("password");
 
-                                if (email.equals(txtEmail) && pass.equals(txtPass)) {
-                                    success = true;
+                            if (email.equals(txtEmail) && pass.equals(txtPass)) {
+                                success = true;
+                                Toast.makeText(LoginActivity2.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
 
-                                    Log.d("DEBUG", "Đăng nhập thành công -> mở HomeActivity");
-                                    Toast.makeText(LoginActivity2.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                                // ✅ Lưu thông tin user vào SharedPreferences
+                                SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = prefs.edit();
+                                editor.putString("email", email);
+                                editor.putBoolean("isLoggedIn", true);
+                                editor.apply();
 
-                                    Intent it = new Intent(LoginActivity2.this, HomeActivity.class);
-                                    it.putExtra("email", email);
-                                    startActivity(it);
-                                    finish();
-                                    break;
-                                }
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                // ✅ Chuyển sang HomeActivity
+                                Intent it = new Intent(LoginActivity2.this, HomeActivity.class);
+                                startActivity(it);
+                                finish();
+                                break;
                             }
-                        }
 
-                        if (!success) {
-                            Toast.makeText(LoginActivity2.this, "Sai email hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
+                    }
+
+                    if (!success) {
+                        Toast.makeText(LoginActivity2.this, "Sai email hoặc mật khẩu", Toast.LENGTH_SHORT).show();
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("ERROR", "Lỗi khi gọi API: " + error.getMessage());
-                        Toast.makeText(LoginActivity2.this, "Không thể kết nối API", Toast.LENGTH_SHORT).show();
-                    }
+                error -> {
+                    Log.e("ERROR", "Lỗi khi gọi API: " + error.getMessage());
+                    Toast.makeText(LoginActivity2.this, "Không thể kết nối API", Toast.LENGTH_SHORT).show();
                 });
 
         queue.add(request);

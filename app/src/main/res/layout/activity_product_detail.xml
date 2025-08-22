@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Hình ảnh sản phẩm -->
         <ImageView
             android:id="@+id/imgProductDetail"
             android:layout_width="match_parent"
@@ -16,6 +17,7 @@
             android:scaleType="centerCrop"
             android:src="@drawable/cake" />
 
+        <!-- Tên sản phẩm -->
         <TextView
             android:id="@+id/txtProductNameDetail"
             android:layout_width="match_parent"
@@ -25,15 +27,17 @@
             android:textStyle="bold"
             android:layout_marginTop="8dp" />
 
+        <!-- Giá sản phẩm -->
         <TextView
             android:id="@+id/txtProductPriceDetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="25.000.000đ"
+            android:text="25.000đ"
             android:textColor="#FF0000"
             android:textSize="18sp"
             android:layout_marginTop="4dp" />
 
+        <!-- Mô tả sản phẩm -->
         <TextView
             android:id="@+id/txtProductDescription"
             android:layout_width="match_parent"
@@ -41,11 +45,29 @@
             android:text="Mô tả sản phẩm..."
             android:layout_marginTop="10dp" />
 
+        <!-- Nút thêm vào giỏ -->
         <Button
             android:id="@+id/btnAddToCart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="Thêm vào giỏ hàng" />
+
+        <!-- Nút xem giỏ hàng -->
+        <Button
+            android:id="@+id/btnViewCart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Xem giỏ hàng" />
+
+        <!-- Nút quay lại Home -->
+        <Button
+            android:id="@+id/btnBackHome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Quay lại Home" />
+
     </LinearLayout>
 </ScrollView>

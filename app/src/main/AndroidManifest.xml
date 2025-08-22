@@ -23,6 +23,11 @@
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity
+            android:name=".ProductDetailActivity">
+        </activity>
+        <activity android:name=".CheckoutActivity" />
+
+        <activity
             android:name=".LoginActivity2"
             android:exported="true">
             <intent-filter>

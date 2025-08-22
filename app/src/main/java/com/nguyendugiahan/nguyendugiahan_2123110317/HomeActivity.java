@@ -9,10 +9,9 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.nguyendugiahan.nguyendugiahan_2123110317.ProductDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +21,9 @@ public class HomeActivity extends AppCompatActivity {
     GridView gridProducts;
     LinearLayout layoutCategory;
     List<Product> productList;
+    ImageView btnCart;
+
+    String userEmail = ""; // 👈 Lưu email từ LoginActivity2
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +32,27 @@ public class HomeActivity extends AppCompatActivity {
 
         gridProducts = findViewById(R.id.gridProducts);
         layoutCategory = findViewById(R.id.layoutCategory);
+        btnCart = findViewById(R.id.btnCart);
+
+        // 👇 Nhận email từ LoginActivity2
+        Intent i = getIntent();
+        if (i != null) {
+            userEmail = i.getStringExtra("email");
+        }
+
+        if (userEmail != null && !userEmail.isEmpty()) {
+            Toast.makeText(this, "Xin chào " + userEmail, Toast.LENGTH_SHORT).show();
+        }
 
         loadCategories();
         loadProducts();
+
+        // Sự kiện mở giỏ hàng
+        btnCart.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, CartActivity.class);
+            intent.putExtra("email", userEmail); // 👈 Truyền email sang CartActivity
+            startActivity(intent);
+        });
     }
 
 
@@ -66,8 +86,8 @@ public class HomeActivity extends AppCompatActivity {
         productList = new ArrayList<>();
         productList.add(new Product("Bánh ngọt", "25.000đ", R.drawable.cake));
         productList.add(new Product("Bánh sữa chua", "35.000đ", R.drawable.chesscake));
-        productList.add(new Product("Cupcake", "20.000.000đ", R.drawable.cupcake));
-        productList.add(new Product("Method…", "50.000đ", R.drawable.khac));
+        productList.add(new Product("Cupcake", "30.000đ", R.drawable.cupcake));
+        productList.add(new Product("Set bánh ngẫu nhiên", "50.000đ", R.drawable.khac));
 
         gridProducts.setAdapter(new ProductAdapter());
     }
@@ -134,7 +154,6 @@ public class HomeActivity extends AppCompatActivity {
             cartIcon.setLayoutParams(cartParams);
             cartIcon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
-
             // Thêm các view vào layout
             layout.addView(img);
             layout.addView(txtName);
@@ -147,7 +166,8 @@ public class HomeActivity extends AppCompatActivity {
                 intent.putExtra("name", productList.get(position).name);
                 intent.putExtra("price", productList.get(position).price);
                 intent.putExtra("image", productList.get(position).image);
-                intent.putExtra("description", "Sản phẩm này rất đáng yêu và chất lượng cao.");
+                intent.putExtra("description", "Sản phẩm được làm thủ công và chất lượng cao.");
+                intent.putExtra("email", userEmail); // 👈 Truyền email sang ProductDetail
                 startActivity(intent);
             });
 
